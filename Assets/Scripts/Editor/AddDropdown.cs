@@ -90,7 +90,7 @@ namespace ButtonDropdown
             Undo.RegisterCreatedObjectUndo(head, "Create " + head.name);
 
             // Create backdrop
-            GameObject backdrop = new GameObject("Backdrop");                                                 // location and size broken???
+            GameObject backdrop = new GameObject("Backdrop");
             GameObjectUtility.SetParentAndAlign(backdrop, head);
             RectTransform itemTransform = backdrop.AddComponent<RectTransform>();
             itemTransform.anchorMin = new Vector2(0,1);

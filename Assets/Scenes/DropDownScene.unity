@@ -1578,7 +1578,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orientation: 0
   backdropColor: {r: 1, g: 1, b: 1, a: 1}
-  backdropOffset: 5
   backdropObject: {fileID: 1605030019}
   subButtonManager: {fileID: 1230789375}
   open_close: 0
