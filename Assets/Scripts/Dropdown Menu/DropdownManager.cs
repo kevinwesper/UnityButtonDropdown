@@ -18,18 +18,14 @@ namespace ButtonDropdown
         [Header ("Main Settings")]
         [SerializeField] private Orientation orientation = Orientation.Vertical;
         [SerializeField] private Color backdropColor = Color.white;
-        /*[SerializeField]*/ private float backdropOffset = 5f;
+
+        /*[SerializeField]*/ private float backdropOffset = 5f;         // WIP
 
         public GameObject backdropObject;           // Can this be encapsulated?
         public GameObject subButtonManager;         // Can this be encapsulated?
 
         private RectTransform backdropTransform;
         private RectTransform buttonTransform;
-
-        private Vector3 initialScale;   // WIP
-        private Vector3 finalScale;     // WIP
-
-        private bool set = false;       // WIP
 
         #region Editor
 
@@ -137,13 +133,6 @@ namespace ButtonDropdown
 
                     backdropTransform.sizeDelta = new Vector2(buttonTransform.sizeDelta.x + backdropOffset * 2, backdropTransform.sizeDelta.y + buttonTransform.sizeDelta.y + backdropOffset);
                 }
-
-                if (!set)                                           // WIP
-                {
-                    initialScale = new Vector3(1, 0, 1);
-                    finalScale = backdropTransform.localScale;
-                    set = true;
-                }
             }
             else if (orientation == Orientation.Horizontal)
             {
@@ -157,13 +146,6 @@ namespace ButtonDropdown
 
                     backdropTransform.sizeDelta = new Vector2(backdropTransform.sizeDelta.x + buttonTransform.sizeDelta.x + backdropOffset, buttonTransform.sizeDelta.y + backdropOffset * 2);
                 }
-
-                if (!set)                                           // WIP
-                {
-                    initialScale = new Vector3(0, 1, 1);
-                    finalScale = backdropTransform.localScale;
-                    set = true;
-                }
             }
             else
             {
@@ -171,36 +153,12 @@ namespace ButtonDropdown
             }
         }
 
-        private IEnumerator OpenClose(bool open)    // WIP
-        {
-            float progress = 0;
-
-            Debug.LogWarning("Initial: " + initialScale);
-            Debug.LogWarning("Final: " + finalScale);
-
-            backdropObject.SetActive(!backdropObject.activeSelf);
-
-            while (progress <= 1)
-            {
-                backdropTransform.localScale = open ? Vector3.Lerp(initialScale, finalScale, progress) : Vector3.Lerp(finalScale, initialScale, progress);
-                progress += Time.deltaTime * 2;
-                yield return null;
-            }
-            backdropTransform.localScale = finalScale;
-
-            Debug.LogWarning("Initial: " + initialScale);
-            Debug.LogWarning("Final: " + finalScale);
-
-            yield return new WaitForSeconds(5);
-            print(Time.time);
-        }
-
         /// <summary>
         /// Activates the backdrop and buttons.
         /// </summary>
         public void Dropdown()
         {
-            StartCoroutine(OpenClose(!backdropObject.activeSelf));  // WIP
+            backdropObject.SetActive(!backdropObject.activeSelf);
 
             for (int i = 0; i < subButtonManager.transform.childCount; i++)
             {
