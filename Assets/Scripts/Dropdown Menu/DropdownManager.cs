@@ -19,13 +19,19 @@ namespace ButtonDropdown
         [SerializeField] private Orientation orientation = Orientation.Vertical;
         [SerializeField] private Color backdropColor = Color.white;
 
-        /*[SerializeField]*/ private float backdropOffset = 5f;         // WIP
+        /*[SerializeField]*/ private float backdropOffset = 5f;         // WIP > Can I actually do something with this variable?
 
         public GameObject backdropObject;           // Can this be encapsulated?
         public GameObject subButtonManager;         // Can this be encapsulated?
 
         private RectTransform backdropTransform;
         private RectTransform buttonTransform;
+
+        private bool open = false;
+        private bool opening = false;
+
+        private Vector3 closedScale;
+        private Vector3 openScale = new Vector3(1,1,1);
 
         #region Editor
 
@@ -58,8 +64,7 @@ namespace ButtonDropdown
             if (open_close)
             {
                 open_close = false;
-
-                Dropdown();
+                TestDown();
             }
 #endif
         }
@@ -104,9 +109,11 @@ namespace ButtonDropdown
             {
                 case Orientation.Vertical:
                     grid.startAxis = GridLayoutGroup.Axis.Horizontal;
+                    closedScale = new Vector3(1, 0, 1);
                     break;
                 case Orientation.Horizontal:
                     grid.startAxis = GridLayoutGroup.Axis.Vertical;
+                    closedScale = new Vector3(0, 1, 1);
                     break;
             }
 
@@ -154,16 +161,81 @@ namespace ButtonDropdown
         }
 
         /// <summary>
-        /// Activates the backdrop and buttons.
+        /// Activates the dropping down animation.
         /// </summary>
         public void Dropdown()
         {
-            backdropObject.SetActive(!backdropObject.activeSelf);
+            if (!opening)
+            {
+                StartCoroutine(DroppingDown());
+            }
+        }
 
+        /// <summary>
+        /// Dropdown for testing purposes in the editor.
+        /// </summary>
+        private void TestDown()
+        {
+            backdropObject.SetActive(!backdropObject.activeSelf);
             for (int i = 0; i < subButtonManager.transform.childCount; i++)
             {
                 subButtonManager.transform.GetChild(i).gameObject.SetActive(!subButtonManager.transform.GetChild(i).gameObject.activeSelf);
             }
+        }
+
+        /// <summary>
+        /// Opens or closes the dropdown menu.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator DroppingDown()
+        {
+            float progress = 0;
+
+            Vector3 startLocation;
+            Vector3 endLocation;
+
+            if (open)
+            {
+                for (int i = 0; i < subButtonManager.transform.childCount; i++)
+                {
+                    subButtonManager.transform.GetChild(i).gameObject.SetActive(!subButtonManager.transform.GetChild(i).gameObject.activeSelf);
+                }
+
+                startLocation = openScale;
+                endLocation = closedScale;
+
+                open = false;
+            }
+            else
+            {
+                startLocation = closedScale;
+                endLocation = openScale;
+
+                open = true;
+            }
+
+            backdropObject.SetActive(true);
+
+            while (progress <= 1)
+            {
+                opening = true;
+                backdropTransform.localScale = Vector3.Lerp(startLocation, endLocation, progress);
+                progress += Time.deltaTime;
+                yield return null;
+            }
+            opening = false;
+
+            if (open)
+            {
+                for (int i = 0; i < subButtonManager.transform.childCount; i++)
+                {
+                    subButtonManager.transform.GetChild(i).gameObject.SetActive(!subButtonManager.transform.GetChild(i).gameObject.activeSelf);
+                }
+            }
+
+            backdropTransform.localScale = endLocation;
+
+            yield return null;
         }
     }
 }
