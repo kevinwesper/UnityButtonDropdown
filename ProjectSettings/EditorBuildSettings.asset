@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/DropDownScene.unity
+    path: Assets/ButtonDropdown/Scenes/DropDownScene.unity
     guid: c7653f2ac3a02cf4d81a6512d76760b7
   m_configObjects: {}
